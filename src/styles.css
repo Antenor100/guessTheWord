@@ -1,0 +1,239 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.game-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+}
+
+.screen {
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+.setup-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.setup-options div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+select, input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+}
+
+#current-word-count {
+    font-weight: bold;
+    color: #007bff;
+    margin-left: 10px;
+}
+
+.game-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.mime-instructions {
+    background-color: #e0e0e0;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 500px;
+    width: 100%;
+}
+
+.mime-instructions h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.mime-instructions p {
+    color: #007bff;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#word-reveal {
+    color: #dc3545;
+    font-size: 0.9em;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.guess-area {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.guess-buttons button {
+    padding: 12px 24px;
+    font-size: 16px;
+    transition: opacity 0.3s;
+}
+
+#correct-guess {
+    background-color: #28a745;
+}
+
+#incorrect-guess {
+    background-color: #dc3545;
+}
+
+.guess-buttons button:hover {
+    opacity: 0.9;
+}
+
+.score-board {
+    margin-top: 20px;
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#final-scores {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.player-score {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.player-score.winner {
+    background-color: #fff9e0;
+    border: 2px solid #ffd700;
+}
+
+.player-score h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.player-score p {
+    margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+    .game-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .setup-options div {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .guess-area {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .guess-buttons {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .guess-buttons button {
+        width: 100%;
+    }
+}
+
+/* Loading Indicator */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-indicator p {
+    color: white;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
