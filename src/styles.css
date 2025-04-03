@@ -131,19 +131,12 @@ button:hover {
     background-color: #28a745;
 }
 
-#incorrect-guess {
+#skip-word {
     background-color: #dc3545;
 }
 
 .guess-buttons button:hover {
     opacity: 0.9;
-}
-
-.score-board {
-    margin-top: 20px;
-    background-color: #f1f1f1;
-    padding: 15px;
-    border-radius: 5px;
 }
 
 #final-scores {
