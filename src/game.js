@@ -8,8 +8,12 @@ class GuessTheWordGame {
     // Initialize API key from localStorage if available
     this.apiKey = localStorage.getItem("openai_api_key") || null;
 
-    // Track used words across the entire game
-    this.usedWords = new Set();
+    // Track used words across the entire game, separated by language
+    this.usedWords = {
+      portuguese: new Set(),
+      english: new Set(),
+      spanish: new Set(),
+    };
 
     this.initializeElements();
     this.setupEventListeners();
@@ -182,20 +186,29 @@ class GuessTheWordGame {
       }
     }
 
+    // Convert used words to an array for the prompt
+    const usedWordsArray = Array.from(this.usedWords[this.language] || []);
+
     // Define prompts based on language
     const prompts = {
-      portuguese: `Gere ${count} palavras ${difficultyDescription(
+      portuguese: `Gere ${count} palavras ${this.difficultyDescription(
         difficulty,
         "pt"
-      )} em português para um jogo de mímica. Retorne apenas as palavras separadas por vírgula, sem explicações adicionais. Não seja previsível.`,
-      english: `Generate ${count} ${difficultyDescription(
+      )} em português para um jogo de mímica. Retorne apenas as palavras separadas por vírgula, sem explicações adicionais. Não seja previsível. PALAVRAS JÁ USADAS: ${usedWordsArray.join(
+        ", "
+      )}. NÃO RETORNE NENHUMA DESSAS PALAVRAS.`,
+      english: `Generate ${count} ${this.difficultyDescription(
         difficulty,
         "en"
-      )} words in English for a charades game. Return only the words separated by commas, without additional explanations. Don't be predictable.`,
-      spanish: `Genera ${count} palabras ${difficultyDescription(
+      )} words in English for a charades game. Return only the words separated by commas, without additional explanations. Don't be predictable. WORDS ALREADY USED: ${usedWordsArray.join(
+        ", "
+      )}. DO NOT RETURN ANY OF THESE WORDS.`,
+      spanish: `Genera ${count} palabras ${this.difficultyDescription(
         difficulty,
         "es"
-      )} en español para un juego de mímica. Devuelve solo las palabras separadas por comas, sin explicaciones adicionales. No seas predecible.`,
+      )} en español para un juego de mímica. Devuelve solo las palabras separadas por comas, sin explicaciones adicionales. No seas predecible. PALABRAS YA UTILIZADAS: ${usedWordsArray.join(
+        ", "
+      )}. NO DEVUELVAS NINGUNA DE ESTAS PALABRAS.`,
     };
 
     // Make API request to ChatGPT
@@ -206,7 +219,7 @@ class GuessTheWordGame {
         Authorization: "Bearer " + this.apiKey,
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "user",
@@ -232,7 +245,9 @@ class GuessTheWordGame {
       .filter((word) => word.length > 0);
 
     // Filter out already used words
-    words = words.filter((word) => !this.usedWords.has(word.toLowerCase()));
+    words = words.filter(
+      (word) => !this.usedWords[this.language].has(word.toLowerCase())
+    );
 
     // If not enough unique words, use fallback
     if (words.length < count) {
@@ -240,10 +255,10 @@ class GuessTheWordGame {
       return this.getFallbackWords(language, difficulty, count);
     }
 
-    // Add selected words to used words set
+    // Add selected words to used words set for the current language
     words
       .slice(0, count)
-      .forEach((word) => this.usedWords.add(word.toLowerCase()));
+      .forEach((word) => this.usedWords[this.language].add(word.toLowerCase()));
 
     return words.slice(0, count);
   }
@@ -391,20 +406,22 @@ class GuessTheWordGame {
 
     // Filter out already used words
     let availableWords = wordDatabase[language][difficulty].filter(
-      (word) => !this.usedWords.has(word.toLowerCase())
+      (word) => !this.usedWords[language].has(word.toLowerCase())
     );
 
-    // If not enough unique words, reset the used words set
+    // If not enough unique words, reset the used words set for this language
     if (availableWords.length < count) {
-      this.usedWords.clear();
+      this.usedWords[language].clear();
       availableWords = wordDatabase[language][difficulty];
     }
 
     // Shuffle and select words
     const selectedWords = this.shuffleArray(availableWords).slice(0, count);
 
-    // Add selected words to used words set
-    selectedWords.forEach((word) => this.usedWords.add(word.toLowerCase()));
+    // Add selected words to used words set for the current language
+    selectedWords.forEach((word) =>
+      this.usedWords[language].add(word.toLowerCase())
+    );
 
     return selectedWords;
   }
@@ -603,7 +620,6 @@ class GuessTheWordGame {
   updatePlayerTurn() {
     this.currentPlayerSpan.textContent = this.currentPlayerIndex + 1;
   }
-
   endGame() {
     // Make sure timer is cleared
     if (this.timerInterval) {
@@ -649,14 +665,19 @@ class GuessTheWordGame {
         return `<div class="player-score ${
           winners.includes(index + 1) ? "winner" : ""
         }">
-                <h3>${playerText} ${index + 1} ${winnerText}</h3>
-                <p>${correctWordsText}: ${hits}</p>
-                <p>${errorsText}: ${this.playerScores.misses[index]}</p>
-                <h4>Palavras:</h4>
-                <ul style="list-style-type: none">${wordListHTML}</ul>
-            </div>`;
+              <h3>${playerText} ${index + 1} ${winnerText}</h3>
+              <p>${correctWordsText}: ${hits}</p>
+              <p>${errorsText}: ${this.playerScores.misses[index]}</p>
+              <h4>Palavras:</h4>
+              <ul style="list-style-type: none">${wordListHTML}</ul>
+          </div>`;
       })
       .join("");
+
+    // Reset used words at the end of the game
+    if (this.usedWords[this.language]) {
+      this.usedWords[this.language].clear();
+    }
   }
 
   getWinnerText(isWinner) {
