@@ -638,11 +638,8 @@ class GuessTheWordGame {
               case "correct":
                 icon = "✅";
                 break;
-              case "incorrect":
-                icon = "❌";
-                break;
               case "skipped":
-                icon = "➡️";
+                icon = "❌";
                 break;
             }
             return `<li>${icon} ${wordItem.word}</li>`;
