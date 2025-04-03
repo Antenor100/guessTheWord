@@ -187,15 +187,15 @@ class GuessTheWordGame {
       portuguese: `Gere ${count} palavras ${difficultyDescription(
         difficulty,
         "pt"
-      )} em português para um jogo de mímica. Retorne apenas as palavras separadas por vírgula, sem explicações adicionais.`,
+      )} em português para um jogo de mímica. Retorne apenas as palavras separadas por vírgula, sem explicações adicionais. Não seja previsível.`,
       english: `Generate ${count} ${difficultyDescription(
         difficulty,
         "en"
-      )} words in English for a charades game. Return only the words separated by commas, without additional explanations.`,
+      )} words in English for a charades game. Return only the words separated by commas, without additional explanations. Don't be predictable.`,
       spanish: `Genera ${count} palabras ${difficultyDescription(
         difficulty,
         "es"
-      )} en español para un juego de mímica. Devuelve solo las palabras separadas por comas, sin explicaciones adicionales.`,
+      )} en español para un juego de mímica. Devuelve solo las palabras separadas por comas, sin explicaciones adicionales. No seas predecible.`,
     };
 
     // Make API request to ChatGPT
